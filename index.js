@@ -18,7 +18,7 @@ const addSheet = async (doc, title) => {
 };
 
 const testConnection = async () => new Promise((resolve, reject) => {
-  const speedTest = spawn('npm', ['run', 'speed-test']);
+  const speedTest = spawn('npm', ['run', 'speed-test'], { cwd: __dirname });
 
   const stdout = [];
   const stderr = [];
