@@ -2,9 +2,11 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { spawn } = require('child_process');
 
 const credentials = require('./google_service_account_creds.json');
-const doc = new GoogleSpreadsheet('14Vo4hRbXvtEZamzoM9gfYMpiybb9n-T9lI34ylNJZqg');
 
-const worksheetTitle = process.argv[2];
+const sheetId = process.argv[2];
+const worksheetTitle = process.argv[3];
+
+const doc = new GoogleSpreadsheet(sheetId);
 
 const addSheet = async (doc, title) => {
   const headerValues = ['when', 'ping', 'download', 'upload', 'isp', 'host', 'sponsor', 'location', 'country'];
