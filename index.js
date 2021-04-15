@@ -9,7 +9,7 @@ const worksheetTitle = process.argv[3];
 const doc = new GoogleSpreadsheet(sheetId);
 
 const addSheet = async (doc, title) => {
-  const headerValues = ['when', 'ping', 'download', 'upload', 'isp', 'host', 'sponsor', 'location', 'country'];
+  const headerValues = ['when', 'ping', 'download', 'upload', 'isp', 'host', 'sponsor', 'location', 'country', 'serverId'];
 
   const newSheet = await doc.addSheet({ title });
   await newSheet.setHeaderRow(headerValues);
@@ -64,6 +64,7 @@ const run = async () => {
     results.data.server.sponsor,
     results.data.server.location,
     results.data.server.country,
+    results.data.server.id,
   ]);
 };
 
