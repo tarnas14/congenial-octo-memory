@@ -8,9 +8,11 @@ you need to setup a [service-account for a google project](https://theoephraim.g
 
 the credential file should be named `google_service_account_creds.json` and put in the root of this repo
 
-remember to share the worksheet you want to use
+remember to share the worksheet you want to use with the google service account
 
-pass 2 arguments - your google sheetId and worksheetTitle - if the worksheet does not exist, it will be created
+pass 2 required arguments - your google sheetId (`--sheetId`) and worksheetTitle (`--worksheet`) - if the worksheet does not exist, it will be created
+
+or check `--help` or `-h`
 
 e.g.
 ```

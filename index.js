@@ -1,10 +1,36 @@
+if (process.argv.findIndex(arg => arg === '--help' || arg === '-h') !== -1) {
+  console.log('--sheetId: google sheet id (required)');
+  console.log('--worksheet: worksheet (required)');
+  console.log('--npm: path to npm binary (if not available in path directly) [optional]');
+
+  process.exit(0);
+  return;
+}
+
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { spawn } = require('child_process');
 
 const credentials = require('./google_service_account_creds.json');
 
-const sheetId = process.argv[2];
-const worksheetTitle = process.argv[3];
+const getParameter = (param, defaultValue) => {
+  const paramIndex = process.argv.findIndex(arg => arg === param);
+  const valueIndex = paramIndex + 1;
+
+  return paramIndex === -1
+    ? defaultValue
+    : process.argv[valueIndex];
+};
+
+const sheetId = getParameter('--sheetId');
+const worksheetTitle = getParameter('--worksheet');
+const npmPath = getParameter('--npm', 'npm');
+
+if (!sheetId || !worksheetTitle) {
+  console.log('You must pass --sheetId and --worksheet');
+  process.exit(1);
+
+  return;
+}
 
 const doc = new GoogleSpreadsheet(sheetId);
 
