@@ -44,10 +44,9 @@ const addSheet = async (doc, title) => {
 };
 
 const testConnection = async () => new Promise((resolve, reject) => {
-  const speedTest = spawn('npm', ['run', 'speed-test'], { cwd: __dirname });
+  const speedTest = spawn(npmPath, ['run', 'speed-test'], { cwd: __dirname });
 
   const stdout = [];
-  const stderr = [];
 
   speedTest.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
@@ -56,7 +55,10 @@ const testConnection = async () => new Promise((resolve, reject) => {
 
   speedTest.stderr.on('data', (data) => {
     console.log(`stderr: ${data}`);
-    stderr.push(data.toString());
+  });
+
+  speedTest.on('error', (...args) => {
+    console.log('child process "error": ', ...args);
   });
 
   speedTest.on('close', (code) => {
@@ -74,24 +76,32 @@ const testConnection = async () => new Promise((resolve, reject) => {
 });
 
 const run = async () => {
-  await doc.useServiceAccountAuth(credentials);
-  await doc.loadInfo();
+  try {
+    await doc.useServiceAccountAuth(credentials);
+    await doc.loadInfo();
 
-  const worksheet = doc.sheetsByTitle[worksheetTitle] || (await addSheet(doc, worksheetTitle));
+    const worksheet = doc.sheetsByTitle[worksheetTitle] || (await addSheet(doc, worksheetTitle));
 
-  const results = await testConnection();
-  await worksheet.addRow([
-    `${results.when.toLocaleDateString()} ${results.when.toLocaleTimeString()}`,
-    results.ping,
-    results.data.speeds.download,
-    results.data.speeds.upload,
-    results.data.client.isp,
-    results.data.server.host,
-    results.data.server.sponsor,
-    results.data.server.location,
-    results.data.server.country,
-    results.data.server.id,
-  ]);
+    const results = await testConnection();
+    await worksheet.addRow([
+      `${results.when.toLocaleDateString()} ${results.when.toLocaleTimeString()}`,
+      results.ping,
+      results.data.speeds.download,
+      results.data.speeds.upload,
+      results.data.client.isp,
+      results.data.server.host,
+      results.data.server.sponsor,
+      results.data.server.location,
+      results.data.server.country,
+      results.data.server.id,
+    ]);
+
+    process.exit(0);
+  } catch (e) {
+    console.log('top level error');
+    console.log(e);
+    process.exit(2);
+  }
 };
 
 run();
